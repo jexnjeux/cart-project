@@ -10,4 +10,6 @@ public interface ProductService {
 
   ProductDto modifyProduct(Long id, ProductRequest.ModifyDto modifyDto, BindingResult result);
 
+  ProductDto deleteProduct(Long id);
+
 }

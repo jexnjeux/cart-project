@@ -9,6 +9,7 @@ import com.example.cart.product.model.dto.ProductRequest;
 import com.example.cart.product.model.dto.ProductRequest.ModifyDto;
 import com.example.cart.product.model.entity.Product;
 import com.example.cart.product.repository.ProductRepository;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -50,13 +51,7 @@ public class ProductServiceImpl implements ProductService {
 
   @Override
   public ProductDto modifyProduct(Long id, ModifyDto modifyDto, BindingResult result) {
-    Product product = productRepository.findById(id)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-            "상품을 찾을 수 없습니다. "));
-
-    if (product.getStatus() == END_OF_SALE) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "삭제된 상품입니다.");
-    }
+    Product product = getProduct(id);
 
     // TODO: createdBy 체크
 
@@ -73,5 +68,26 @@ public class ProductServiceImpl implements ProductService {
     productRepository.save(product);
 
     return ProductDto.of(product);
+  }
+
+  @Override
+  public ProductDto deleteProduct(Long id) {
+    Product product = getProduct(id);
+
+    product.setDeletedDate(LocalDateTime.now());
+    product.setStatus(END_OF_SALE);
+
+    return ProductDto.of(productRepository.save(product));
+  }
+
+  private Product getProduct(Long id) {
+    Product product = productRepository.findById(id)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+            "상품을 찾을 수 없습니다. "));
+
+    if (product.getStatus() == END_OF_SALE) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "삭제된 상품입니다.");
+    }
+    return product;
   }
 }

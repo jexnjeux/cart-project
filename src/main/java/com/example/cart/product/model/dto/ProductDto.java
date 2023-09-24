@@ -23,6 +23,7 @@ public class ProductDto {
   private ProductStatus status;
   private int discountRate;
   private LocalDateTime createdDate;
+  private LocalDateTime deletedDate;
 
   public static ProductDto of(Product product) {
     return ProductDto.builder()
@@ -34,6 +35,8 @@ public class ProductDto {
         .status(product.getStatus())
         .discountRate(product.getDiscountRate())
         .createdDate(product.getCreatedDate())
+        .deletedDate(product.getDeletedDate())
         .build();
   }
+
 }
