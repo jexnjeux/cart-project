@@ -8,4 +8,6 @@ public interface ProductService {
 
   ProductDto createProduct(ProductRequest.CreateDto createDto, BindingResult result);
 
+  ProductDto modifyProduct(Long id, ProductRequest.ModifyDto modifyDto, BindingResult result);
+
 }
