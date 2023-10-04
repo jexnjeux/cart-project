@@ -2,6 +2,8 @@ package com.example.cart.product.service;
 
 import com.example.cart.product.model.dto.ProductDto;
 import com.example.cart.product.model.dto.ProductRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.validation.BindingResult;
 
 public interface ProductService {
@@ -12,4 +14,6 @@ public interface ProductService {
 
   ProductDto deleteProduct(Long id);
 
+  Page<ProductDto> getProductList(String keyword,
+      String category, Integer minPrice, Integer maxPrice, Pageable pageable);
 }

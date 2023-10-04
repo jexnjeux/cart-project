@@ -9,11 +9,15 @@ import com.example.cart.product.model.dto.ProductRequest;
 import com.example.cart.product.model.dto.ProductRequest.ModifyDto;
 import com.example.cart.product.model.entity.Product;
 import com.example.cart.product.repository.ProductRepository;
+import com.example.cart.product.repository.ProductSpecification;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
@@ -79,6 +83,30 @@ public class ProductServiceImpl implements ProductService {
 
     return ProductDto.of(productRepository.save(product));
   }
+
+  @Override
+  public Page<ProductDto> getProductList(String keyword,
+      String category, Integer minPrice, Integer maxPrice, Pageable pageable) {
+
+    Specification<Product> specification = ProductSpecification.findByStatusNot()
+        .and(ProductSpecification.containingKeyword(keyword));
+    if (category != null) {
+      specification = specification.and(ProductSpecification.equalCategory(category));
+    }
+    if (minPrice != null && maxPrice != null) {
+      specification = specification.and(ProductSpecification.betweenPrice(minPrice, maxPrice));
+    }
+
+    return productRepository.findAll(specification, pageable)
+        .map(product -> ProductDto.builder()
+            .id(product.getId())
+            .name(product.getName())
+            .category(product.getCategory())
+            .price(product.getPrice())
+            .status(product.getStatus())
+            .build());
+  }
+
 
   private Product getProduct(Long id) {
     Product product = productRepository.findById(id)
