@@ -57,7 +57,7 @@ public class MemberDto {
     private LocalDateTime createdDate;
 
     public static MemberDto.Response of(Member member) {
-      return Response.builder()
+      return MemberDto.Response.builder()
           .id(member.getId())
           .username(member.getUsername())
           .role(member.getRole())
