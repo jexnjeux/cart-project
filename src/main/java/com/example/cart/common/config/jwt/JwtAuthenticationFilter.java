@@ -10,7 +10,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,20 +20,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
   private final AuthenticationManager authenticationManager;
-  private final ArrayList<String> list = new ArrayList<>();
 
   public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
     this.authenticationManager = authenticationManager;
-    list.add("/join");
-    list.add("/login");
-  }
-
-
-  @Override
-  protected boolean requiresAuthentication(HttpServletRequest request,
-      HttpServletResponse response) {
-    String uri = request.getRequestURI();
-    return !list.contains(uri);
   }
 
   @Override
@@ -58,6 +46,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
       FilterChain chain, Authentication authResult) throws IOException, ServletException {
     PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
 
+    // TODO: @Value(secret, expire)
     String secret = "dGFibGUtc3ByaW5nLWJvb3QtcHJvamVjdC1qd3Qtc2VjcmV0LWtleQo";
 
     String jwt = JWT.create()
