@@ -6,15 +6,11 @@ import com.example.cart.member.model.dto.MemberDto;
 import com.example.cart.member.model.entity.Member;
 import com.example.cart.member.repository.MemberRepository;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +23,7 @@ public class MemberService {
   public MemberDto.Response join(MemberDto.Request request, BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
       log.error("join() 에러 = {}", bindingResult);
-      throw new RuntimeException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
+      // TODO 에러처리
     }
 
     boolean isExistsUsername = memberRepository.existsByUsername(request.getUsername());

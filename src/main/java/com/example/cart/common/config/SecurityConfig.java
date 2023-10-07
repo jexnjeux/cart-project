@@ -1,7 +1,12 @@
 package com.example.cart.common.config;
 
+import com.example.cart.common.config.jwt.JwtAuthenticationFilter;
+import com.example.cart.common.config.jwt.JwtAuthorizationFilter;
+import com.example.cart.member.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -18,6 +23,7 @@ import org.springframework.web.filter.CorsFilter;
 public class SecurityConfig {
 
   private final CorsFilter corsFilter;
+  private final MemberRepository memberRepository;
 
   @Bean
   public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -37,9 +43,24 @@ public class SecurityConfig {
                 .requestMatchers(new AntPathRequestMatcher("/api/admin/**")).hasRole("ADMIN")
                 .requestMatchers(new AntPathRequestMatcher("/api/user/**")).authenticated()
                 .anyRequest().permitAll());
+    http.apply(new MyCustomDsl());
+
     http.headers(httpSecurityHeadersConfigurer -> httpSecurityHeadersConfigurer.frameOptions(
         FrameOptionsConfig::sameOrigin));
     return http.build();
   }
 
+  public class MyCustomDsl extends AbstractHttpConfigurer<MyCustomDsl, HttpSecurity> {
+
+    @Override
+    public void configure(HttpSecurity http) throws Exception {
+      AuthenticationManager authenticationManager = http.getSharedObject(
+          AuthenticationManager.class);
+
+      http.addFilter(corsFilter)
+          .addFilter(new JwtAuthenticationFilter(authenticationManager))
+          .addFilter(new JwtAuthorizationFilter(authenticationManager, memberRepository));
+    }
+  }
 }
+

@@ -17,7 +17,8 @@ public class MemberController {
   private final MemberService memberService;
 
   @PostMapping("/join")
-  public ResponseEntity<MemberDto.Response> join(@Valid @RequestBody MemberDto.Request request, BindingResult bindingResult) {
+  public ResponseEntity<MemberDto.Response> join(@RequestBody @Valid MemberDto.Request request, BindingResult bindingResult) {
     return ResponseEntity.ok().body(memberService.join(request, bindingResult));
   }
+
 }
