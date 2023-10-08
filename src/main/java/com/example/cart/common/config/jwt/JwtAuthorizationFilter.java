@@ -1,8 +1,11 @@
 package com.example.cart.common.config.jwt;
 
+import static com.example.cart.common.type.ErrorCode.USERNAME_NOT_FOUND;
+
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.example.cart.common.config.auth.PrincipalDetails;
+import com.example.cart.common.exception.member.MemberNotFoundException;
 import com.example.cart.member.model.entity.Member;
 import com.example.cart.member.repository.MemberRepository;
 import jakarta.servlet.FilterChain;
@@ -14,12 +17,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
-  private MemberRepository memberRepository;
+  private final MemberRepository memberRepository;
 
   public JwtAuthorizationFilter(
       AuthenticationManager authenticationManager, MemberRepository memberRepository) {
@@ -34,6 +36,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     String tokenPrefix = "Bearer ";
 
     String jwtHeader = request.getHeader(headerString);
+    // TODO: @Value
     String secret = "dGFibGUtc3ByaW5nLWJvb3QtcHJvamVjdC1qd3Qtc2VjcmV0LWtleQo";
 
     if (jwtHeader != null && jwtHeader.startsWith(tokenPrefix)) {
@@ -46,7 +49,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
       if (username != null) {
         Member member = memberRepository.findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("등록되지 않은 아이디입니다."));
+            .orElseThrow(() -> new MemberNotFoundException(USERNAME_NOT_FOUND));
 
         PrincipalDetails principalDetails = new PrincipalDetails(member);
 

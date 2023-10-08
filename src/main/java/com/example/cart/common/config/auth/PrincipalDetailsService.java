@@ -1,5 +1,8 @@
 package com.example.cart.common.config.auth;
 
+import static com.example.cart.common.type.ErrorCode.USERNAME_NOT_FOUND;
+
+import com.example.cart.common.exception.member.MemberNotFoundException;
 import com.example.cart.member.model.entity.Member;
 import com.example.cart.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +21,8 @@ public class PrincipalDetailsService implements UserDetailsService {
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-    System.out.println("PrincipalDetailsService.loadUserByUsername");
     Member member = memberRepository.findByUsername(username)
-        .orElseThrow(() -> new UsernameNotFoundException("등록되지 않은 아이디입니다."));
+        .orElseThrow(() -> new MemberNotFoundException(USERNAME_NOT_FOUND));
     return new PrincipalDetails(member);
   }
 }

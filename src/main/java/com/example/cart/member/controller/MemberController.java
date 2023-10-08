@@ -1,5 +1,6 @@
 package com.example.cart.member.controller;
 
+import com.example.cart.common.dto.SuccessResponseDto;
 import com.example.cart.member.model.dto.MemberDto;
 import com.example.cart.member.service.MemberService;
 import jakarta.validation.Valid;
@@ -17,8 +18,10 @@ public class MemberController {
   private final MemberService memberService;
 
   @PostMapping("/join")
-  public ResponseEntity<MemberDto.Response> join(@RequestBody @Valid MemberDto.Request request, BindingResult bindingResult) {
-    return ResponseEntity.ok().body(memberService.join(request, bindingResult));
+  public ResponseEntity<SuccessResponseDto<MemberDto.Response>> join(@RequestBody @Valid MemberDto.Request request,
+      BindingResult bindingResult) {
+    return ResponseEntity.ok()
+        .body(SuccessResponseDto.of(memberService.join(request, bindingResult)));
   }
 
 }
