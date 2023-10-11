@@ -1,7 +1,7 @@
 package com.example.cart.product.model.entity;
 
-import com.example.cart.product.model.dto.ProductCategory;
-import com.example.cart.product.model.dto.ProductStatus;
+import com.example.cart.product.type.ProductCategory;
+import com.example.cart.product.type.ProductStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;

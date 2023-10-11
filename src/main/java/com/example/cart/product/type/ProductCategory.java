@@ -1,4 +1,4 @@
-package com.example.cart.product.model.dto;
+package com.example.cart.product.type;
 
 public enum ProductCategory {
   CLOTHING,

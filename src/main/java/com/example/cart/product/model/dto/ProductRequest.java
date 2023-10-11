@@ -1,5 +1,6 @@
 package com.example.cart.product.model.dto;
 
+import com.example.cart.product.type.ProductCategory;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -49,10 +50,14 @@ public class ProductRequest {
   public static class ModifyDto {
 
     private ProductCategory category;
+
     private String name;
+
     @Min(value = 0, message = "가격은 0원 이상 입력 가능합니다")
     private Integer price;
+
     private Integer stock;
+
     private int discountRate;
   }
 }

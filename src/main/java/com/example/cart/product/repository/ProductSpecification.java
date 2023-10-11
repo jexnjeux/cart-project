@@ -1,7 +1,7 @@
 package com.example.cart.product.repository;
 
-import com.example.cart.product.model.dto.ProductCategory;
-import com.example.cart.product.model.dto.ProductStatus;
+import com.example.cart.product.type.ProductCategory;
+import com.example.cart.product.type.ProductStatus;
 import com.example.cart.product.model.entity.Product;
 import org.springframework.data.jpa.domain.Specification;
 
