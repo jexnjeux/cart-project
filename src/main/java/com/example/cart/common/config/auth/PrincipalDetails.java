@@ -4,7 +4,6 @@ import com.example.cart.member.model.entity.Member;
 import java.util.ArrayList;
 import java.util.Collection;
 import lombok.Data;
-import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Data
 public class PrincipalDetails implements UserDetails {
 
-  private final Member member;
+  private final transient Member member;
 
   public PrincipalDetails(Member member) {
     this.member = member;
@@ -24,6 +23,10 @@ public class PrincipalDetails implements UserDetails {
     SimpleGrantedAuthority authority = new SimpleGrantedAuthority(String.valueOf(member.getRole()));
     grantedAuthorities.add(authority);
     return grantedAuthorities;
+  }
+
+  public Member getMember() {
+    return member;
   }
 
   @Override
