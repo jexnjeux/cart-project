@@ -3,6 +3,7 @@ package com.example.cart.common.config;
 import com.example.cart.common.config.jwt.JwtAuthenticationFilter;
 import com.example.cart.common.config.jwt.JwtAuthorizationFilter;
 import com.example.cart.member.repository.MemberRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +25,7 @@ public class SecurityConfig {
 
   private final CorsFilter corsFilter;
   private final MemberRepository memberRepository;
+  private final ObjectMapper objectMapper;
 
   @Bean
   public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -58,7 +60,7 @@ public class SecurityConfig {
           AuthenticationManager.class);
 
       http.addFilter(corsFilter)
-          .addFilter(new JwtAuthenticationFilter(authenticationManager))
+          .addFilter(new JwtAuthenticationFilter(authenticationManager, objectMapper))
           .addFilter(new JwtAuthorizationFilter(authenticationManager, memberRepository));
     }
   }

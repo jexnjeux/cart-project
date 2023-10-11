@@ -11,12 +11,5 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class BaseResponseDto {
 
-  boolean success;
-  int code;
-
-  public BaseResponseDto(boolean success, int code) {
-    this.success = success;
-    this.code = code;
-
-  }
+  final boolean success;
 }

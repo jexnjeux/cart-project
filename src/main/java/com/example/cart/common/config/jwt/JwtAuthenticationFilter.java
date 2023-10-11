@@ -11,26 +11,24 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
   private final AuthenticationManager authenticationManager;
-
-  public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
-    this.authenticationManager = authenticationManager;
-  }
+  private final ObjectMapper objectMapper;
 
   @Override
   public Authentication attemptAuthentication(HttpServletRequest request,
       HttpServletResponse response) throws AuthenticationException {
     try {
-      ObjectMapper om = new ObjectMapper();
-      Member member = om.readValue(request.getInputStream(), Member.class);
+      Member member = objectMapper.readValue(request.getInputStream(), Member.class);
 
       UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
           member.getUsername(), member.getPassword());

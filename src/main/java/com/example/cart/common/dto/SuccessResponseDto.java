@@ -9,7 +9,7 @@ public class SuccessResponseDto<T> extends BaseResponseDto {
   private final T data;
 
   private SuccessResponseDto(T data) {
-    super(true, HttpStatus.OK.value());
+    super(true);
     this.data = data;
   }
 

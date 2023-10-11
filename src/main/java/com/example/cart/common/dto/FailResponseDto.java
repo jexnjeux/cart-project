@@ -8,32 +8,30 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class FailResponseDto extends BaseResponseDto {
 
   private ErrorCode errorCode;
   private String errorMessage;
 
 
-  private FailResponseDto(int code, ErrorCode errorCode) {
-    super(false, code);
+  private FailResponseDto(ErrorCode errorCode) {
+    super(false);
     this.errorCode = errorCode;
     this.errorMessage = errorCode.getDescription();
   }
 
-  private FailResponseDto(int code, ErrorCode errorCode, String errorMessage) {
-    super(false, code);
+  private FailResponseDto(ErrorCode errorCode, String errorMessage) {
+    super(false);
     this.errorCode = errorCode;
     this.errorMessage = errorMessage;
   }
 
-  public static FailResponseDto of(int code, ErrorCode errorCode) {
-    return new FailResponseDto(code, errorCode);
+  public static FailResponseDto of(ErrorCode errorCode) {
+    return new FailResponseDto(errorCode);
   }
 
-  public static FailResponseDto of(int code, ErrorCode errorCode, String errorMessage) {
-    return new FailResponseDto(code, errorCode, errorMessage);
+  public static FailResponseDto of(ErrorCode errorCode, String errorMessage) {
+    return new FailResponseDto(errorCode, errorMessage);
   }
 
 }

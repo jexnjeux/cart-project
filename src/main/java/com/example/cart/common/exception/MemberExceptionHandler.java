@@ -16,19 +16,19 @@ public class MemberExceptionHandler {
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
   public FailResponseDto usernameNotFoundExceptionHandler(
       MemberNotFoundException e) {
-    return FailResponseDto.of(HttpStatus.UNAUTHORIZED.value(), e.getErrorCode());
+    return FailResponseDto.of(e.getErrorCode());
   }
 
   @ExceptionHandler(AlreadyJoinedUsernameException.class)
   @ResponseStatus(HttpStatus.CONFLICT)
   public FailResponseDto alreadyJoinedUsernameExceptionHandler(AlreadyJoinedUsernameException e) {
-    return FailResponseDto.of(HttpStatus.CONFLICT.value(), e.getErrorCode());
+    return FailResponseDto.of(e.getErrorCode());
   }
 
   @ExceptionHandler(MissingRequestException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public FailResponseDto missingRequestExceptionHandler(MissingRequestException e) {
-    return FailResponseDto.of(HttpStatus.BAD_REQUEST.value(), e.getErrorCode(), e.getMessage());
+    return FailResponseDto.of(e.getErrorCode(), e.getMessage());
   }
 
 }
