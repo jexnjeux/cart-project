@@ -16,7 +16,7 @@ public class ProductSpecification {
 
   public static Specification<Product> containingKeyword(String keyword) {
     return (root, query, criteriaBuilder) -> {
-      return criteriaBuilder.like(root.get("name"), keyword);
+      return criteriaBuilder.like(root.get("name"), '%' + keyword + '%');
     };
   }
 
