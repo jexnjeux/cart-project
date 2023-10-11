@@ -14,7 +14,7 @@ import com.example.cart.common.exception.member.MissingRequestException;
 import com.example.cart.common.exception.product.NoPermissionException;
 import com.example.cart.common.exception.product.NotExistException;
 import com.example.cart.common.type.ErrorCode;
-import com.example.cart.product.model.dto.DetailsDto;
+import com.example.cart.product.model.dto.ProductDetailsResponseDto;
 import com.example.cart.product.model.dto.ProductDto;
 import com.example.cart.product.model.dto.ProductDto.Response;
 import com.example.cart.product.model.entity.Product;
@@ -106,6 +106,12 @@ public class ProductService {
 
     return productRepository.findAll(specification, pageable)
         .map(Response::of);
+  }
+
+  public ProductDetailsResponseDto getProductDetails(Long id) {
+    Product product = getProduct(id, DELETED_PRODUCT);
+
+    return ProductDetailsResponseDto.of(product);
   }
 
 

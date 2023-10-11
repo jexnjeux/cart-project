@@ -1,6 +1,7 @@
 package com.example.cart.product.controller;
 
 import com.example.cart.common.dto.SuccessResponseDto;
+import com.example.cart.product.model.dto.ProductDetailsResponseDto;
 import com.example.cart.product.model.dto.ProductDto;
 import com.example.cart.product.service.ProductService;
 import jakarta.validation.Valid;
@@ -63,5 +64,10 @@ public class ProductController {
     return ResponseEntity.ok()
         .body(SuccessResponseDto.of(
             productService.getProductList(keyword, category, minPrice, maxPrice, pageable)));
+  }
+
+  @GetMapping("/product/{id}")
+  public ResponseEntity<SuccessResponseDto<ProductDetailsResponseDto>> getProductDetails(@PathVariable Long id) {
+    return ResponseEntity.ok().body(SuccessResponseDto.of(productService.getProductDetails(id)));
   }
 }
