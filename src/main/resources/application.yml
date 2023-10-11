@@ -1,15 +1,11 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:cart
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
-  h2:
-    console:
-      enabled: true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/cart?serverTimezone=Asia/Seoul
+    username: zerobase
+    password: zerobase
   jpa:
     defer-datasource-initialization: true
-    database-platform: H2
     hibernate:
       ddl-auto: create
     open-in-view: false
