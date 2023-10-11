@@ -14,9 +14,10 @@ import com.example.cart.common.exception.member.MissingRequestException;
 import com.example.cart.common.exception.product.NoPermissionException;
 import com.example.cart.common.exception.product.NotExistException;
 import com.example.cart.common.type.ErrorCode;
+import com.example.cart.product.model.dto.ProductDeleteResponseDto;
 import com.example.cart.product.model.dto.ProductDetailsResponseDto;
-import com.example.cart.product.model.dto.ProductDto;
-import com.example.cart.product.model.dto.ProductDto.Response;
+import com.example.cart.product.model.dto.ProductFormDto;
+import com.example.cart.product.model.dto.ProductResponseDto;
 import com.example.cart.product.model.entity.Product;
 import com.example.cart.product.repository.ProductRepository;
 import com.example.cart.product.repository.ProductSpecification;
@@ -39,12 +40,12 @@ public class ProductService {
 
   private final ProductRepository productRepository;
 
-  public ProductDto.Response createProduct(ProductDto.Request request,
+  public ProductResponseDto createProduct(ProductFormDto request,
       BindingResult bindingResult) {
 
     checkRequestBody(bindingResult);
 
-    return ProductDto.Response.of(productRepository.save(Product.builder()
+    return ProductResponseDto.of(productRepository.save(Product.builder()
         .category(request.getCategory())
         .name(request.getName())
         .price(request.getPrice())
@@ -55,7 +56,7 @@ public class ProductService {
   }
 
 
-  public ProductDto.Response modifyProduct(Long id, ProductDto.Request request,
+  public ProductResponseDto modifyProduct(Long id, ProductFormDto request,
       BindingResult bindingResult) {
 
     checkRequestBody(bindingResult);
@@ -77,10 +78,10 @@ public class ProductService {
 
     productRepository.save(product);
 
-    return ProductDto.Response.of(product);
+    return ProductResponseDto.of(product);
   }
 
-  public ProductDto.DeleteResponse deleteProduct(Long id) {
+  public ProductDeleteResponseDto deleteProduct(Long id) {
     Product product = getProduct(id, ALREADY_DELETED_PRODUCT);
     String memberId = getMemberId();
 
@@ -89,10 +90,10 @@ public class ProductService {
     product.setDeletedDate(LocalDateTime.now());
     product.setStatus(END_OF_SALE);
 
-    return ProductDto.DeleteResponse.of(productRepository.save(product));
+    return ProductDeleteResponseDto.of(productRepository.save(product));
   }
 
-  public Page<ProductDto.Response> getProductList(String keyword,
+  public Page<ProductResponseDto> getProductList(String keyword,
       String category, Integer minPrice, Integer maxPrice, Pageable pageable) {
 
     Specification<Product> specification = ProductSpecification.findByStatusNot()
@@ -105,7 +106,7 @@ public class ProductService {
     }
 
     return productRepository.findAll(specification, pageable)
-        .map(Response::of);
+        .map(ProductResponseDto::of);
   }
 
   public ProductDetailsResponseDto getProductDetails(Long id) {

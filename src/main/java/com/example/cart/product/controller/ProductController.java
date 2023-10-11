@@ -1,8 +1,10 @@
 package com.example.cart.product.controller;
 
 import com.example.cart.common.dto.SuccessResponseDto;
+import com.example.cart.product.model.dto.ProductDeleteResponseDto;
 import com.example.cart.product.model.dto.ProductDetailsResponseDto;
-import com.example.cart.product.model.dto.ProductDto;
+import com.example.cart.product.model.dto.ProductFormDto;
+import com.example.cart.product.model.dto.ProductResponseDto;
 import com.example.cart.product.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,29 +31,29 @@ public class ProductController {
   private final ProductService productService;
 
   @PostMapping("/admin/product")
-  public ResponseEntity<SuccessResponseDto<ProductDto.Response>> createProduct(
-      @Valid @RequestBody ProductDto.Request request,
+  public ResponseEntity<SuccessResponseDto<ProductResponseDto>> createProduct(
+      @Valid @RequestBody ProductFormDto request,
       BindingResult result) {
     return ResponseEntity.ok()
         .body(SuccessResponseDto.of(productService.createProduct(request, result)));
   }
 
   @PutMapping("/admin/product/{id}")
-  public ResponseEntity<SuccessResponseDto<ProductDto.Response>> modifyProduct(
+  public ResponseEntity<SuccessResponseDto<ProductResponseDto>> modifyProduct(
       @PathVariable Long id,
-      @RequestBody ProductDto.Request request, BindingResult result) {
+      @RequestBody ProductFormDto request, BindingResult result) {
     return ResponseEntity.ok()
         .body(SuccessResponseDto.of(productService.modifyProduct(id, request, result)));
   }
 
   @DeleteMapping("/admin/product/{id}")
-  public ResponseEntity<SuccessResponseDto<ProductDto.DeleteResponse>> deleteProduct(
+  public ResponseEntity<SuccessResponseDto<ProductDeleteResponseDto>> deleteProduct(
       @PathVariable Long id) {
     return ResponseEntity.ok().body(SuccessResponseDto.of(productService.deleteProduct(id)));
   }
 
   @GetMapping("/products")
-  public ResponseEntity<SuccessResponseDto<Page<ProductDto.Response>>> getProducts(
+  public ResponseEntity<SuccessResponseDto<Page<ProductResponseDto>>> getProducts(
       @RequestParam(value = "keyword") String keyword,
       @RequestParam(value = "page", defaultValue = "0") int page,
       @RequestParam(value = "category", required = false) String category,
