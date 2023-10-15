@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,10 +35,10 @@ public class CartItem {
   private int quantity;
 
   @CreatedDate
-  private LocalDateTime createdDate;
+  private LocalDate createdDate;
 
   @LastModifiedDate
-  private LocalDateTime modifiedDate;
+  private LocalDate modifiedDate;
 
   @ManyToOne
   private Product product;
