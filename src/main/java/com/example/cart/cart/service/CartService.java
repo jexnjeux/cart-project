@@ -1,16 +1,20 @@
 package com.example.cart.cart.service;
 
 import static com.example.cart.common.type.ErrorCode.CANT_PUT_IN_THE_CART;
+import static com.example.cart.common.type.ErrorCode.CART_ITEM_NOT_FOUND;
+import static com.example.cart.common.type.ErrorCode.CART_NOT_MATCHED_USER;
 import static com.example.cart.common.type.ErrorCode.EXCESS_MAXIMUM_QUANTITY;
 import static com.example.cart.common.type.ErrorCode.NON_EXISTENT_PRODUCT;
 import static com.example.cart.common.type.ErrorCode.USER_ID_NOT_FOUND;
 
 import com.example.cart.cart.model.dto.CartItemDto;
+import com.example.cart.cart.model.dto.CartItemModifyDto;
 import com.example.cart.cart.model.dto.CartResponseDto;
 import com.example.cart.cart.model.entity.Cart;
 import com.example.cart.cart.model.entity.CartItem;
 import com.example.cart.cart.repository.CartItemRepository;
 import com.example.cart.cart.repository.CartRepository;
+import com.example.cart.common.exception.cart.CartNotFoundException;
 import com.example.cart.common.exception.cart.ExcessMaximumException;
 import com.example.cart.common.exception.member.MemberNotFoundException;
 import com.example.cart.common.exception.product.NotExistException;
@@ -49,20 +53,12 @@ public class CartService {
 
     if (cart == null) {
       cart = Cart.createCart(member);
-      cartRepository.save(cart);
     }
 
-    Product product = productRepository.findById(request.getItemId())
-        .orElseThrow(() -> new NotExistException(NON_EXISTENT_PRODUCT));
+    Product product = getProduct(request);
 
-    if (product.getStatus().equals(ProductStatus.END_OF_SALE) || product.getStatus()
-        .equals(ProductStatus.SOLD_OUT)) {
-      throw new NotExistException(CANT_PUT_IN_THE_CART);
-    }
-
-    if (product.getStock() < request.getCount()) {
-      throw new ExcessMaximumException(EXCESS_MAXIMUM_QUANTITY);
-    }
+    cart.setCount(cart.getCount() + 1);
+    cartRepository.save(cart);
 
     CartItem cartItem = CartItem.builder()
         .count(request.getCount())
@@ -74,4 +70,34 @@ public class CartService {
   }
 
 
+  @Transactional
+  public CartResponseDto modifyCartItem(CartItemModifyDto request, BindingResult bindingResult) {
+    utils.checkRequestBody(bindingResult);
+
+    getProduct(request);
+
+    CartItem cartItem = cartItemRepository.findById(request.getCartItemId()).orElseThrow(() ->
+        new CartNotFoundException(CART_ITEM_NOT_FOUND));
+
+    cartItem.setCount(request.getCount());
+    return CartResponseDto.of(cartItemRepository.save(cartItem));
+
+  }
+
+
+  private Product getProduct(CartItemDto request) {
+    Product product = productRepository.findById(request.getProductId())
+        .orElseThrow(() -> new NotExistException(NON_EXISTENT_PRODUCT));
+
+    if (product.getStatus().equals(ProductStatus.END_OF_SALE) || product.getStatus()
+        .equals(ProductStatus.SOLD_OUT)) {
+      throw new NotExistException(CANT_PUT_IN_THE_CART);
+    }
+
+    if (product.getStock() < request.getCount()) {
+      throw new ExcessMaximumException(EXCESS_MAXIMUM_QUANTITY);
+    }
+    return product;
+  }
 }
+

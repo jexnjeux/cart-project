@@ -15,7 +15,10 @@ public enum ErrorCode {
   NON_EXISTENT_PRODUCT("상품이 존재하지 않습니다."),
   ALREADY_DELETED_PRODUCT("이미 삭제된 상품입니다."),
   DELETED_PRODUCT("삭제된 상품입니다."),
-  CANT_PUT_IN_THE_CART("품절 또는 판매 종료된 상품입니다.");
+  CANT_PUT_IN_THE_CART("품절 또는 판매 종료된 상품입니다."),
+  EXCESS_MAXIMUM_QUANTITY("장바구니에 담으려는 수량이 재고 수량보다 많습니다."),
+  CART_NOT_MATCHED_USER("유저에 해당하는 장바구니가 아닙니다."),
+  CART_ITEM_NOT_FOUND("장바구니에 해당 상품이 없습니다.");
 
   private final String description;
 }

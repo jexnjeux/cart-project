@@ -34,7 +34,7 @@ public class Cart {
 
   public static Cart createCart(Member member) {
     Cart cart = new Cart();
-    cart.setCount(0);
+    cart.setCount(1);
     cart.setMember(member);
     return cart;
   }
