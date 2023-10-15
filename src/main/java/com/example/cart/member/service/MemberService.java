@@ -28,7 +28,7 @@ public class MemberService {
   public MemberDto.Response join(MemberDto.Request request, BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
       throw new MissingRequestException(
-          Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage(), MISSING_REQUEST_BODY);
+          bindingResult.getFieldError().getDefaultMessage(), MISSING_REQUEST_BODY);
     }
 
     boolean isExistsUsername = memberRepository.existsByUsername(request.getUsername());
