@@ -13,6 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductResponseDto {
+  private Long id;
 
   private String name;
   private int price;
@@ -21,6 +22,7 @@ public class ProductResponseDto {
 
   public static ProductResponseDto of(Product product) {
     return ProductResponseDto.builder()
+        .id(product.getId())
         .name(product.getName())
         .price(product.getPrice())
         .discountRate(product.getDiscountRate())
