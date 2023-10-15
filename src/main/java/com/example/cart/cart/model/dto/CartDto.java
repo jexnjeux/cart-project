@@ -15,6 +15,5 @@ public class CartDto {
 
   private Long cartId;
   private Long userId;
-  private int count;
 
 }

@@ -31,7 +31,7 @@ public class CartItem {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private int count;
+  private int quantity;
 
   @CreatedDate
   private LocalDateTime createdDate;
@@ -40,7 +40,6 @@ public class CartItem {
   private LocalDateTime modifiedDate;
 
   @ManyToOne
-  @JoinColumn(name = "product_id")
   private Product product;
 
   @ManyToOne

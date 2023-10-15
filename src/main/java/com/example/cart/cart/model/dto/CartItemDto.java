@@ -19,6 +19,6 @@ public class CartItemDto {
   private Long productId;
 
   @Min(value = 1, message = "수량은 1개 이상 입력해야 합니다.")
-  private int count;
+  private int quantity;
 
 }

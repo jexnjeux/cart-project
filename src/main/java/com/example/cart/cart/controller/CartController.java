@@ -2,15 +2,18 @@ package com.example.cart.cart.controller;
 
 import com.example.cart.cart.model.dto.CartItemDto;
 import com.example.cart.cart.model.dto.CartItemModifyDto;
+import com.example.cart.cart.model.dto.CartItemResponseDto;
 import com.example.cart.cart.model.dto.CartResponseDto;
 import com.example.cart.cart.service.CartService;
 import com.example.cart.common.dto.BaseResponseDto;
 import com.example.cart.common.dto.SuccessResponseDto;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -43,6 +46,12 @@ public class CartController {
   public ResponseEntity<BaseResponseDto> deleteCartItem(@PathVariable Long id) {
     return ResponseEntity.ok()
         .body(BaseResponseDto.builder().success(cartService.deleteCartItem(id)).build());
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<SuccessResponseDto<List<CartItemResponseDto>>> getCart(
+      @PathVariable Long id) {
+    return ResponseEntity.ok().body(SuccessResponseDto.of(cartService.getCart(id)));
   }
 
 }

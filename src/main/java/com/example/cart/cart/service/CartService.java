@@ -9,6 +9,7 @@ import static com.example.cart.common.type.ErrorCode.USER_ID_NOT_FOUND;
 
 import com.example.cart.cart.model.dto.CartItemDto;
 import com.example.cart.cart.model.dto.CartItemModifyDto;
+import com.example.cart.cart.model.dto.CartItemResponseDto;
 import com.example.cart.cart.model.dto.CartResponseDto;
 import com.example.cart.cart.model.entity.Cart;
 import com.example.cart.cart.model.entity.CartItem;
@@ -24,7 +25,10 @@ import com.example.cart.member.repository.MemberRepository;
 import com.example.cart.product.model.entity.Product;
 import com.example.cart.product.repository.ProductRepository;
 import com.example.cart.product.type.ProductStatus;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,7 +66,7 @@ public class CartService {
     cartRepository.save(cart);
 
     CartItem cartItem = CartItem.builder()
-        .count(request.getCount())
+        .quantity(request.getQuantity())
         .cart(cart)
         .product(product)
         .build();
@@ -80,7 +84,7 @@ public class CartService {
     CartItem cartItem = cartItemRepository.findById(request.getCartItemId()).orElseThrow(() ->
         new CartNotFoundException(CART_ITEM_NOT_FOUND));
 
-    cartItem.setCount(request.getCount());
+    cartItem.setQuantity(request.getQuantity());
     return CartResponseDto.of(cartItemRepository.save(cartItem));
 
   }
@@ -101,6 +105,14 @@ public class CartService {
     return true;
   }
 
+  public List<CartItemResponseDto> getCart(Long id) {
+    return cartItemRepository.findByCart_MemberId(
+            id).stream()
+        .map(CartItemResponseDto::of
+        ).collect(Collectors.toList());
+
+  }
+
 
   private Product getProduct(CartItemDto request) {
     Product product = productRepository.findById(request.getProductId())
@@ -111,7 +123,7 @@ public class CartService {
       throw new NotExistException(CANT_PUT_IN_THE_CART);
     }
 
-    if (product.getStock() < request.getCount()) {
+    if (product.getStock() < request.getQuantity()) {
       throw new ExcessMaximumException(EXCESS_MAXIMUM_QUANTITY);
     }
     return product;

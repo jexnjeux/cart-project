@@ -15,12 +15,12 @@ import lombok.Setter;
 public class CartResponseDto {
 
   private String name;
-  private int count;
+  private int quantity;
 
   public static CartResponseDto of(CartItem cartItem) {
     return CartResponseDto.builder()
         .name(cartItem.getProduct().getName())
-        .count(cartItem.getCount())
+        .quantity(cartItem.getQuantity())
         .build();
   }
 
