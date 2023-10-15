@@ -24,6 +24,7 @@ import com.example.cart.member.repository.MemberRepository;
 import com.example.cart.product.model.entity.Product;
 import com.example.cart.product.repository.ProductRepository;
 import com.example.cart.product.type.ProductStatus;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,6 +83,22 @@ public class CartService {
     cartItem.setCount(request.getCount());
     return CartResponseDto.of(cartItemRepository.save(cartItem));
 
+  }
+
+  public boolean deleteCartItem(Long id) {
+    Long memberId = utils.getMemberId();
+
+    Cart cart = cartRepository.findByMemberId(memberId).orElse(null);
+
+    CartItem cartItem = cartItemRepository.findById(id)
+        .orElseThrow(() -> new CartNotFoundException(CART_ITEM_NOT_FOUND));
+    cartItemRepository.deleteById(id);
+
+    assert cart != null;
+    if (!Objects.equals(cartItem.getCart().getId(), cart.getId())) {
+      throw new CartNotFoundException(CART_NOT_MATCHED_USER);
+    }
+    return true;
   }
 
 
