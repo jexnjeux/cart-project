@@ -4,6 +4,8 @@ import com.example.cart.product.type.ProductCategory;
 import com.example.cart.product.type.ProductStatus;
 import com.example.cart.product.model.entity.Product;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Repository;
+
 
 public class ProductSpecification {
 
