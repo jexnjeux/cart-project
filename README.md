@@ -79,5 +79,8 @@
 ![Static Badge](https://img.shields.io/badge/spring_boot-6DB33F?style=for-the-badge)
 ![Static Badge](https://img.shields.io/badge/spring_security-6DB33F?style=for-the-badge)
 ![Static Badge](https://img.shields.io/badge/h2_database-0c1de6?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/mysql-016189?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/swagger-84E92C?style=for-the-badge)
+
 
 
