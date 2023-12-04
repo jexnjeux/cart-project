@@ -5,6 +5,7 @@ import com.example.cart.product.model.dto.ProductDeleteResponseDto;
 import com.example.cart.product.model.dto.ProductDetailsResponseDto;
 import com.example.cart.product.model.dto.ProductFormDto;
 import com.example.cart.product.model.dto.ProductResponseDto;
+import com.example.cart.product.model.entity.Product;
 import com.example.cart.product.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,48 +29,55 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ProductController {
 
-  private final ProductService productService;
+    private final ProductService productService;
 
-  @PostMapping("/admin/product")
-  public ResponseEntity<SuccessResponseDto<ProductResponseDto>> createProduct(
-      @Valid @RequestBody ProductFormDto request,
-      BindingResult result) {
-    return ResponseEntity.ok()
-        .body(SuccessResponseDto.of(productService.createProduct(request, result)));
-  }
+    @PostMapping("/admin/product")
+    public ResponseEntity<SuccessResponseDto<ProductResponseDto>> createProduct(
+            @Valid @RequestBody ProductFormDto request,
+            BindingResult result) {
+        Product product = productService.createProduct(request, result);
+        return ResponseEntity.ok()
+                .body(SuccessResponseDto.of(ProductResponseDto.of(product)));
+    }
 
-  @PutMapping("/admin/product/{id}")
-  public ResponseEntity<SuccessResponseDto<ProductResponseDto>> modifyProduct(
-      @PathVariable Long id,
-      @RequestBody ProductFormDto request, BindingResult result) {
-    return ResponseEntity.ok()
-        .body(SuccessResponseDto.of(productService.modifyProduct(id, request, result)));
-  }
+    @PutMapping("/admin/product/{id}")
+    public ResponseEntity<SuccessResponseDto<ProductResponseDto>> modifyProduct(
+            @PathVariable Long id,
+            @RequestBody ProductFormDto request, BindingResult result) {
 
-  @DeleteMapping("/admin/product/{id}")
-  public ResponseEntity<SuccessResponseDto<ProductDeleteResponseDto>> deleteProduct(
-      @PathVariable Long id) {
-    return ResponseEntity.ok().body(SuccessResponseDto.of(productService.deleteProduct(id)));
-  }
+        Product product = productService.modifyProduct(id, request, result);
+        return ResponseEntity.ok()
+                .body(SuccessResponseDto.of(ProductResponseDto.of(product)));
+    }
 
-  @GetMapping("/products")
-  public ResponseEntity<SuccessResponseDto<Page<ProductResponseDto>>> getProducts(
-      @RequestParam(value = "keyword") String keyword,
-      @RequestParam(value = "page", defaultValue = "0") int page,
-      @RequestParam(value = "category", required = false) String category,
-      @RequestParam(value = "min-price", required = false) Integer minPrice,
-      @RequestParam(value = "max-price", required = false) Integer maxPrice
-  ) {
+    @DeleteMapping("/admin/product/{id}")
+    public ResponseEntity<SuccessResponseDto<ProductDeleteResponseDto>> deleteProduct(
+            @PathVariable Long id) {
+        return ResponseEntity.ok()
+                .body(SuccessResponseDto.of(ProductDeleteResponseDto.of(productService.deleteProduct(id))));
+    }
 
-    int size = 10;
-    Pageable pageable = PageRequest.of(page, size);
-    return ResponseEntity.ok()
-        .body(SuccessResponseDto.of(
-            productService.getProductList(keyword, category, minPrice, maxPrice, pageable)));
-  }
+    @GetMapping("/products")
+    public ResponseEntity<SuccessResponseDto<Page<ProductResponseDto>>> getProducts(
+            @RequestParam(value = "keyword") String keyword,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "category", required = false) String category,
+            @RequestParam(value = "min-price", required = false) Integer minPrice,
+            @RequestParam(value = "max-price", required = false) Integer maxPrice
+    ) {
 
-  @GetMapping("/product/{id}")
-  public ResponseEntity<SuccessResponseDto<ProductDetailsResponseDto>> getProductDetails(@PathVariable Long id) {
-    return ResponseEntity.ok().body(SuccessResponseDto.of(productService.getProductDetails(id)));
-  }
+        int size = 10;
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Product> productPage = productService.getProductList(keyword, category, minPrice, maxPrice, pageable);
+        return ResponseEntity.ok()
+                .body(SuccessResponseDto.of(productPage.map(ProductResponseDto::of)));
+    }
+
+    @GetMapping("/product/{id}")
+    public ResponseEntity<SuccessResponseDto<ProductDetailsResponseDto>> getProductDetails(@PathVariable Long id) {
+        Product product = productService.getProductDetails(id);
+        return ResponseEntity.ok()
+                .body(SuccessResponseDto.of(ProductDetailsResponseDto.of(product)));
+    }
 }

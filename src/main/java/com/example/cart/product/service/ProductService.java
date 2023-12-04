@@ -14,10 +14,7 @@ import com.example.cart.common.exception.member.MissingRequestException;
 import com.example.cart.common.exception.product.NoPermissionException;
 import com.example.cart.common.exception.product.NotExistException;
 import com.example.cart.common.type.ErrorCode;
-import com.example.cart.product.model.dto.ProductDeleteResponseDto;
-import com.example.cart.product.model.dto.ProductDetailsResponseDto;
 import com.example.cart.product.model.dto.ProductFormDto;
-import com.example.cart.product.model.dto.ProductResponseDto;
 import com.example.cart.product.model.entity.Product;
 import com.example.cart.product.repository.ProductRepository;
 import com.example.cart.product.repository.ProductSpecification;
@@ -38,111 +35,106 @@ import org.springframework.validation.BindingResult;
 @Slf4j
 public class ProductService {
 
-  private final ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
-  public ProductResponseDto createProduct(ProductFormDto request,
-      BindingResult bindingResult) {
+    public Product createProduct(ProductFormDto request,
+            BindingResult bindingResult) {
 
-    checkRequestBody(bindingResult);
+        checkRequestBody(bindingResult);
 
-    return ProductResponseDto.of(productRepository.save(Product.builder()
-        .category(request.getCategory())
-        .name(request.getName())
-        .price(request.getPrice())
-        .stock(request.getStock())
-        .discountRate(request.getDiscountRate())
-        .status(ON_SALE)
-        .build()));
-  }
-
-
-  public ProductResponseDto modifyProduct(Long id, ProductFormDto request,
-      BindingResult bindingResult) {
-
-    checkRequestBody(bindingResult);
-
-    Product product = getProduct(id, DELETED_PRODUCT);
-    String memberId = getMemberId();
-
-    checkCreatorId(product.getCreatedBy(), memberId);
-
-    product.setCategory(request.getCategory());
-    product.setName(request.getName());
-    product.setPrice(request.getPrice());
-    product.setStock(request.getStock());
-    product.setDiscountRate(request.getDiscountRate());
-
-    if (request.getStock() == 0) {
-      product.setStatus(SOLD_OUT);
+        return productRepository.save(Product.builder()
+                .category(request.getCategory())
+                .name(request.getName())
+                .price(request.getPrice())
+                .stock(request.getStock())
+                .discountRate(request.getDiscountRate())
+                .status(ON_SALE)
+                .build());
     }
 
-    productRepository.save(product);
 
-    return ProductResponseDto.of(product);
-  }
+    public Product modifyProduct(Long id, ProductFormDto request,
+            BindingResult bindingResult) {
 
-  public ProductDeleteResponseDto deleteProduct(Long id) {
-    Product product = getProduct(id, ALREADY_DELETED_PRODUCT);
-    String memberId = getMemberId();
+        checkRequestBody(bindingResult);
 
-    checkCreatorId(product.getCreatedBy(), memberId);
+        Product product = getProduct(id, DELETED_PRODUCT);
+        String memberId = getMemberId();
 
-    product.setDeletedDate(LocalDateTime.now());
-    product.setStatus(END_OF_SALE);
+        checkCreatorId(product.getCreatedBy(), memberId);
 
-    return ProductDeleteResponseDto.of(productRepository.save(product));
-  }
+        product.setCategory(request.getCategory());
+        product.setName(request.getName());
+        product.setPrice(request.getPrice());
+        product.setStock(request.getStock());
+        product.setDiscountRate(request.getDiscountRate());
 
-  public Page<ProductResponseDto> getProductList(String keyword,
-      String category, Integer minPrice, Integer maxPrice, Pageable pageable) {
+        if (request.getStock() == 0) {
+            product.setStatus(SOLD_OUT);
+        }
 
-    Specification<Product> specification = ProductSpecification.findByStatusNot()
-        .and(ProductSpecification.containingKeyword(keyword));
-    if (category != null) {
-      specification = specification.and(ProductSpecification.equalCategory(category));
-    }
-    if (minPrice != null && maxPrice != null) {
-      specification = specification.and(ProductSpecification.betweenPrice(minPrice, maxPrice));
+        return productRepository.save(product);
     }
 
-    return productRepository.findAll(specification, pageable)
-        .map(ProductResponseDto::of);
-  }
+    public Product deleteProduct(Long id) {
+        Product product = getProduct(id, ALREADY_DELETED_PRODUCT);
+        String memberId = getMemberId();
 
-  public ProductDetailsResponseDto getProductDetails(Long id) {
-    Product product = getProduct(id, DELETED_PRODUCT);
+        checkCreatorId(product.getCreatedBy(), memberId);
 
-    return ProductDetailsResponseDto.of(product);
-  }
+        product.setDeletedDate(LocalDateTime.now());
+        product.setStatus(END_OF_SALE);
 
-
-  private String getMemberId() {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-    return principalDetails.getMember().getId().toString();
-  }
-
-  private void checkRequestBody(BindingResult bindingResult) {
-    if (bindingResult.hasErrors()) {
-      throw new MissingRequestException(
-          Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage(),
-          MISSING_REQUEST_BODY);
+        return productRepository.save(product);
     }
-  }
 
-  private Product getProduct(Long id, ErrorCode errorCode) {
-    Product product = productRepository.findById(id)
-        .orElseThrow(() -> new NotExistException(NON_EXISTENT_PRODUCT));
+    public Page<Product> getProductList(String keyword,
+            String category, Integer minPrice, Integer maxPrice, Pageable pageable) {
 
-    if (product.getStatus() == END_OF_SALE) {
-      throw new NotExistException(errorCode);
+        Specification<Product> specification = ProductSpecification.findByStatusNot()
+                .and(ProductSpecification.containingKeyword(keyword));
+        if (category != null) {
+            specification = specification.and(ProductSpecification.equalCategory(category));
+        }
+        if (minPrice != null && maxPrice != null) {
+            specification = specification.and(ProductSpecification.betweenPrice(minPrice, maxPrice));
+        }
+
+        return productRepository.findAll(specification, pageable);
     }
-    return product;
-  }
 
-  private static void checkCreatorId(String creatorId, String memberId) {
-    if (!creatorId.equals(memberId)) {
-      throw new NoPermissionException(NO_MODIFY_PERMISSION);
+    public Product getProductDetails(Long id) {
+        return getProduct(id, DELETED_PRODUCT);
     }
-  }
+
+
+    private String getMemberId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        return principalDetails.getMember().getId().toString();
+    }
+
+    private void checkRequestBody(BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new MissingRequestException(
+                    Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage(),
+                    MISSING_REQUEST_BODY);
+        }
+    }
+
+    private Product getProduct(Long id, ErrorCode errorCode) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new NotExistException(NON_EXISTENT_PRODUCT));
+
+        if (product.getStatus() == END_OF_SALE) {
+            throw new NotExistException(errorCode);
+        }
+        return product;
+    }
+
+    private static void checkCreatorId(String creatorId, String memberId) {
+        if (!creatorId.equals(memberId)) {
+            throw new NoPermissionException(NO_MODIFY_PERMISSION);
+        }
+    }
 }

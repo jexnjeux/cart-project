@@ -2,6 +2,7 @@ package com.example.cart.member.controller;
 
 import com.example.cart.common.dto.SuccessResponseDto;
 import com.example.cart.member.model.dto.MemberDto;
+import com.example.cart.member.model.entity.Member;
 import com.example.cart.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,13 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class MemberController {
 
-  private final MemberService memberService;
+    private final MemberService memberService;
 
-  @PostMapping("/join")
-  public ResponseEntity<SuccessResponseDto<MemberDto.Response>> join(@RequestBody @Valid MemberDto.Request request,
-      BindingResult bindingResult) {
-    return ResponseEntity.ok()
-        .body(SuccessResponseDto.of(memberService.join(request, bindingResult)));
-  }
+    @PostMapping("/join")
+    public ResponseEntity<SuccessResponseDto<MemberDto.Response>> join(@RequestBody @Valid MemberDto.Request request,
+            BindingResult bindingResult) {
+        Member member = memberService.join(request, bindingResult);
+        return ResponseEntity.ok()
+                .body(SuccessResponseDto.of(MemberDto.Response.of(member)));
+    }
 
 }

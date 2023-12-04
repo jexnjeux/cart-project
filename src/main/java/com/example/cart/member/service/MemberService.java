@@ -10,7 +10,6 @@ import com.example.cart.member.model.dto.MemberDto;
 import com.example.cart.member.model.entity.Member;
 import com.example.cart.member.repository.MemberRepository;
 import java.time.LocalDateTime;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,7 +24,7 @@ public class MemberService {
   private final MemberRepository memberRepository;
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-  public MemberDto.Response join(MemberDto.Request request, BindingResult bindingResult) {
+  public Member join(MemberDto.Request request, BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
       throw new MissingRequestException(
           bindingResult.getFieldError().getDefaultMessage(), MISSING_REQUEST_BODY);
@@ -38,7 +37,7 @@ public class MemberService {
     }
     String encryptedPw = bCryptPasswordEncoder.encode(request.getPassword());
 
-    Member newMember = Member.builder()
+    return Member.builder()
         .username(request.getUsername())
         .password(encryptedPw)
         .role(request.getRole() == null ? ROLE_USER : request.getRole())
@@ -50,8 +49,6 @@ public class MemberService {
         .postalCode(request.getPostalCode())
         .createdDate(LocalDateTime.now())
         .build();
-
-    return MemberDto.Response.of(memberRepository.save(newMember));
   }
 
 }
