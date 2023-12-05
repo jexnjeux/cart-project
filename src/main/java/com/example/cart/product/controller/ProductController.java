@@ -25,13 +25,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/products")
 @RequiredArgsConstructor
 public class ProductController {
 
     private final ProductService productService;
 
-    @PostMapping("/admin/product")
+    @PostMapping
     public ResponseEntity<SuccessResponseDto<ProductResponseDto>> createProduct(
             @Valid @RequestBody ProductFormDto request,
             BindingResult result) {
@@ -40,7 +40,7 @@ public class ProductController {
                 .body(SuccessResponseDto.of(ProductResponseDto.of(product)));
     }
 
-    @PutMapping("/admin/product/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<SuccessResponseDto<ProductResponseDto>> modifyProduct(
             @PathVariable Long id,
             @RequestBody ProductFormDto request, BindingResult result) {
@@ -50,14 +50,14 @@ public class ProductController {
                 .body(SuccessResponseDto.of(ProductResponseDto.of(product)));
     }
 
-    @DeleteMapping("/admin/product/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<SuccessResponseDto<ProductDeleteResponseDto>> deleteProduct(
             @PathVariable Long id) {
         return ResponseEntity.ok()
                 .body(SuccessResponseDto.of(ProductDeleteResponseDto.of(productService.deleteProduct(id))));
     }
 
-    @GetMapping("/products")
+    @GetMapping
     public ResponseEntity<SuccessResponseDto<Page<ProductResponseDto>>> getProducts(
             @RequestParam(value = "keyword") String keyword,
             @RequestParam(value = "page", defaultValue = "0") int page,
@@ -74,7 +74,7 @@ public class ProductController {
                 .body(SuccessResponseDto.of(productPage.map(ProductResponseDto::of)));
     }
 
-    @GetMapping("/product/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<SuccessResponseDto<ProductDetailsResponseDto>> getProductDetails(@PathVariable Long id) {
         Product product = productService.getProductDetails(id);
         return ResponseEntity.ok()

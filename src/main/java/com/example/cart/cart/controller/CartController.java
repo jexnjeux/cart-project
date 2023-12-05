@@ -24,37 +24,37 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/user/cart")
+@RequestMapping("/api/users/{id}/carts")
 @RequiredArgsConstructor
 public class CartController {
 
     private final CartService cartService;
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<SuccessResponseDto<CartResponseDto>> addCart(
-            @Valid @RequestBody CartItemDto request, BindingResult bindingResult) {
+            @Valid @RequestBody CartItemDto request, BindingResult bindingResult, @PathVariable("id") Long id) {
         CartItem cartItem = cartService.addCartItem(request, bindingResult);
         return ResponseEntity.ok()
                 .body(SuccessResponseDto.of(CartResponseDto.of(cartItem)));
     }
 
-    @PutMapping()
+    @PutMapping
     public ResponseEntity<SuccessResponseDto<CartResponseDto>> modifyCart(
-            @Valid @RequestBody CartItemModifyDto request, BindingResult bindingResult) {
+            @Valid @RequestBody CartItemModifyDto request, BindingResult bindingResult, @PathVariable("id") Long id) {
         CartItem cartItem = cartService.modifyCartItem(request, bindingResult);
         return ResponseEntity.ok()
                 .body(SuccessResponseDto.of(CartResponseDto.of(cartItem)));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<BaseResponseDto> deleteCartItem(@PathVariable Long id) {
+    @DeleteMapping
+    public ResponseEntity<BaseResponseDto> deleteCartItem(@PathVariable("id") Long id) {
         return ResponseEntity.ok()
                 .body(BaseResponseDto.builder().success(cartService.deleteCartItem(id)).build());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping
     public ResponseEntity<SuccessResponseDto<List<CartItemResponseDto>>> getCart(
-            @PathVariable Long id) {
+            @PathVariable("id") Long id) {
         List<CartItem> cartItems = cartService.getCart(id);
         return ResponseEntity.ok().body(SuccessResponseDto.of(cartItems.stream()
                 .map(CartItemResponseDto::of
