@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-APP_NAME="Cart"
-REPOSITORY=/home/ubuntu/$APP_NAME
+PROJECT_ROOT=/home/ubuntu
+REPOSITORY=$PROJECT_ROOT/app
 cd $REPOSITORY
 
-JAR_FILE="$PROJECT_ROOT/cart.jar"
+JAR_FILE="$REPOSITORY/cart.jar"
 JAR_NAME=$(ls $REPOSITORY/build/libs/ | grep 'SNAPSHOT.jar' | tail -n 1)
 JAR_PATH=$REPOSITORY/build/libs/$JAR_NAME
 
@@ -25,9 +25,9 @@ if [ -z $CURRENT_PID ]
 then
   echo "> 종료할 애플리케이션이 없습니다."
 else
-  echo "> kill -9 $CURRENT_PID"
+  echo "> kill -15 $CURRENT_PID"
   kill -15 $CURRENT_PID
-  sleep 5
+  sleep 10
 fi
 
 echo "$TIME_NOW > $JAR_FILE 파일 실행" >> $DEPLOY_LOG
