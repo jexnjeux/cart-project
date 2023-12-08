@@ -1,8 +1,15 @@
 # 커머스 프로젝트 🛍️
 
-상품을 등록하고, 등록된 상품을 장바구니에 담고, 장바구니에 담은 상품을 주문하는 기능을 구현한 프로젝트입니다.
-<br/>
-<br/>
+장바구니 기능을 구현한 프로젝트 입니다.
+
+## 주요 기능
+### [🔗 Swagger](http://43.201.145.62:8080/swagger-ui/index.html)
+
+- 회원가입, 로그인
+- 상품 등록 / 수정 / 삭제 / 조회
+- 장바구니 추가 / 수정 / 삭제
+
+
 
 ## ERD
 
@@ -10,77 +17,45 @@
 <br/>
 <br/>
 
-## 프로젝트 기능
+## 시스템 아키텍처
 
-### [고객]
-
-**회원가입**
-- 아이디, 비밀번호, 이름, 휴대폰번호의 정보가 필수적으로 필요하다.
-- 일반 고객의 경우 생년월일과 성별 정보는 선택적으로 입력 가능하다.
-- 이미 가입된 아이디로 회원가입을 시도할 경우 에러가 발생한다.
-- 패스워드는 영문과 숫자의 조합으로 구성되어야 하며, 이를 충족하지 못할 경우 에러가 발생한다.
-- 가입한 고객의 권한은 일반 고객(USER)과 관리자(ADMIN)로 구분하며, default는 일반 고객(USER)이다.
-
-**로그인**
-- 가입되어있지 않는 아이디로 로그인을 요청할 경우 에러가 발생한다.
-- 아이디와 비밀번호가 일치하지 않는 경우 에러가 발생한다.
-
-**회원탈퇴**
-- 탈퇴 시, 고객의 탈퇴일 정보가 업데이트된다.
-- 관리자가 탈퇴 시, 등록했던 상품의 상태가 판매 종료(END_OF_SALE)로 변경된다.
-
-<br/>
-
-### [상품]
-- 관리자만 상품을 등록/수정/삭제할 수 있다.
-
-**상품 등록**
-- 등록을 위해서 카테고리, 상품명, 가격, 재고 수량, 할인율, 판매 상태의 정보가 필요하다.
-
-**상품 수정/삭제**
-- 본인이 등록한 상품만 수정, 삭제할 수 있다.
-- 재고가 0인 상품은 판매 상태가 품절(SOLD_OUT)로 변경된다.
-- 삭제된 상품은 판매 상태가 판매 종료(END_OF_SALE)로 변경된다.
-
-**상품 조회**
-- 로그인을 하지 않아도 이용 가능하다.
-- 검색어를 포함하고 있는 상품명 또는 카테고리가 조회 가능하다.
-- 검색어, 최소 가격, 최대 가격으로 조회 시, 최소 가격과 최대 가격 내에 있는 상품이 조회 가능하다.
-- 조회 시, size 10으로 상품 리스트를 반환한다.
-- 반환되는 상품 리스트에는 현재 판매 중인 상품과 품절된 상품이 포함되며, 판매가 종료된 상품은 포함되지 않는다.
-  <br/>
-
-### [장바구니]
-- 로그인 후 본인의 장바구니만 이용 가능하다.
-
-**장바구니 추가**
-- 현재 판매 중인 상품만 장바구니에 담을 수 있다.
-- 여러 종류의 상품을 장바구니에 담을 수 있다.
-- 하나의 상품에 대해 해당 상품의 재고 수량까지 장바구니에 담을 수 있다.
-
-**장바구니 수정/삭제**
-- 하나의 상품에 대해 장바구니에 담을 수 있는 최소 수량은 1개이고, 최대 수량은 해당 상품의 재고 수량이다.
-- 장바구니에 담긴 상품을 삭제할 수 있고, 삭제를 취소할 수 없다.
-
-**장바구니 조회**
-- 장바구니에 담은지 30일 지난 상품은 자동으로 삭제된다.
-- 품절되거나 판매 종료된 상품은 장바구니에서 조회가 가능하지만, 수량을 수정할 수 없고 삭제만 가능하다.
-
-<br/>
-
-### [주문] (추가 기능 구현 사항)
+![system architecture](./docs/img/system_architecture.png)
 <br/>
 <br/>
-
 
 ## 기술 스택
 
-![Static Badge](https://img.shields.io/badge/java-ea2c2f?style=for-the-badge)
-![Static Badge](https://img.shields.io/badge/spring_boot-6DB33F?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/java_17-ea2c2f?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/spring_boot_3-6DB33F?style=for-the-badge)
 ![Static Badge](https://img.shields.io/badge/spring_security-6DB33F?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/spring_data_JPA-6DB33F?style=for-the-badge)
+
 ![Static Badge](https://img.shields.io/badge/h2_database-0c1de6?style=for-the-badge)
 ![Static Badge](https://img.shields.io/badge/mysql-016189?style=for-the-badge)
 ![Static Badge](https://img.shields.io/badge/swagger-84E92C?style=for-the-badge)
 
+![Static Badge](https://img.shields.io/badge/github_actions-2088FF?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/AWS_s3-DF5344?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/AWS_codedeploy-4B612C?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/aws_ec2-F48536?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/aws_rds-2E73B8?style=for-the-badge)
 
+## API
 
+| API 그룹      | 엔드포인트                                                             | HTTP 메서드 | 설명          |
+|-------------|-------------------------------------------------------------------|----------|-------------|
+| 회원 관리 API   | /join                                                             | POST     | 회원가입        |
+|             | /login                                                            | POST     | 로그인         |
+| 상품 관리 API   | /api/products                                                     | POST     | 상품 등록       |
+|             | /api/products/{id}                                                | GET      | 상품 상세 조회    |
+|             | /api/products/{id}                                                | PUT      | 상품 수정       |
+|             | /api/products/{id}                                                | DELETE   | 상품 삭제       |
+|             | /api/products?keyword=<br/>&page=&category=&min-price=&max-price= | GET      | 상품 검색       |
+| 장바구니 관리 API | /api/user/{user_id}/carts                                         | POST     | 장바구니 추가     |
+|             | /api/user/{user_id}/carts                                         | GET      | 장바구니 조회     |
+|             | /api/user/{user_id}/carts/{cart_item_id}                          | PUT      | 장바구니 아이템 수정 |
+|             | /api/user/{user_id}/carts/{cart_item_id}                          | DELETE   | 장바구니 아이템 삭제 |
+
+## 유스 케이스
+
+### [유스 케이스 보기](https://github.com/jexnjeux/cart-project/wiki/%EC%9C%A0%EC%8A%A4-%EC%BC%80%EC%9D%B4%EC%8A%A4)
