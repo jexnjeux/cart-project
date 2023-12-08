@@ -5,7 +5,11 @@
 - 상품 등록: 로그인 후 새로운 상품을 등록할 수 있습니다.
 - 상품 조회: 키워드, 카테고리, 가격 정보를 이용해 상품을 조회할 수 있습니다.
 - 장바구니 추가: 현재 판매 중인 상품은 장바구니에 추가할 수 있습니다.
+<br/>
 
+## 시스템 아키텍처
+
+![system architecture](./docs/img/system_architecture.png)
 
 ## ERD
 
@@ -32,6 +36,7 @@
 |             | /api/user/{user_id}/carts/{cart_item_id}                          | PUT      | 장바구니 아이템 수정 |
 |             | /api/user/{user_id}/carts/{cart_item_id}                          | DELETE   | 장바구니 아이템 삭제 |
 
+<br/>
 
 ## 기술 스택
 
@@ -49,6 +54,8 @@
 ![Static Badge](https://img.shields.io/badge/AWS_codedeploy-4B612C?style=for-the-badge)
 ![Static Badge](https://img.shields.io/badge/aws_ec2-F48536?style=for-the-badge)
 ![Static Badge](https://img.shields.io/badge/aws_rds-2E73B8?style=for-the-badge)
+
+<br/>
 
 ## 유스 케이스
 
