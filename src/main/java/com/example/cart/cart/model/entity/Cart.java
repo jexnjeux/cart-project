@@ -35,6 +35,7 @@ public class Cart {
   @JoinColumn(name = "member_id")
   private Member member;
 
+  @Builder.Default
   @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<CartItem> cartItemList = new ArrayList<>();
 
