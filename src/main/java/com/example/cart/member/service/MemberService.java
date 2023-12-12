@@ -21,34 +21,35 @@ import org.springframework.validation.BindingResult;
 @Slf4j
 public class MemberService {
 
-  private final MemberRepository memberRepository;
-  private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final MemberRepository memberRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-  public Member join(MemberDto.Request request, BindingResult bindingResult) {
-    if (bindingResult.hasErrors()) {
-      throw new MissingRequestException(
-          bindingResult.getFieldError().getDefaultMessage(), MISSING_REQUEST_BODY);
+    public Member join(MemberDto.Request request, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new MissingRequestException(
+                    bindingResult.getFieldError().getDefaultMessage(), MISSING_REQUEST_BODY);
+        }
+
+        boolean isExistsUsername = memberRepository.existsByUsername(request.getUsername());
+
+        if (isExistsUsername) {
+            throw new AlreadyJoinedUsernameException(ALREADY_JOINED_USERNAME);
+        }
+        String encryptedPw = bCryptPasswordEncoder.encode(request.getPassword());
+        Member member = Member.builder()
+                .username(request.getUsername())
+                .password(encryptedPw)
+                .role(request.getRole() == null ? ROLE_USER : request.getRole())
+                .name(request.getName())
+                .phone(request.getPhone())
+                .birthDate(request.getBirthDate())
+                .gender(request.getGender())
+                .address(request.getAddress())
+                .postalCode(request.getPostalCode())
+                .createdDate(LocalDateTime.now())
+                .build();
+
+        return memberRepository.save(member);
     }
-
-    boolean isExistsUsername = memberRepository.existsByUsername(request.getUsername());
-
-    if (isExistsUsername) {
-      throw new AlreadyJoinedUsernameException(ALREADY_JOINED_USERNAME);
-    }
-    String encryptedPw = bCryptPasswordEncoder.encode(request.getPassword());
-
-    return Member.builder()
-        .username(request.getUsername())
-        .password(encryptedPw)
-        .role(request.getRole() == null ? ROLE_USER : request.getRole())
-        .name(request.getName())
-        .phone(request.getPhone())
-        .birthDate(request.getBirthDate())
-        .gender(request.getGender())
-        .address(request.getAddress())
-        .postalCode(request.getPostalCode())
-        .createdDate(LocalDateTime.now())
-        .build();
-  }
 
 }
